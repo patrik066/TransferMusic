@@ -5,23 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Playlists</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-    <div id="gradient">
+    <div class="content">
         <h1>Your YouTube Playlists</h1>
-        <ul>
+        <ul class="playlist-grid">
             {% for playlist in playlists %}
                 <li>
                     <h2>{{ playlist.title }}</h2>
-                    <img src="{{ playlist.thumbnail }}" alt="Playlist Thumbnail">
+                    {% if playlist.thumbnail %}
+                        <img src="{{ playlist.thumbnail }}" alt="Thumbnail">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='default_playlist.png') }}" alt="Default Thumbnail">
+                    {% endif %}
+                    <button onclick="transferToSpotify('{{ playlist.id }}')" type="button">Transfer to Spotify</button>
+                    <div class="transfer-status" id="status-{{ playlist.id }}"></div>
                 </li>
             {% endfor %}
         </ul>
-        <a href="/yt">Back</a><br>
-        <a href="/">Home</a>
-        <footer>&copy; 2024 TransferMusic</footer>
+        <div class="button-group">
+            <a href="/"><button>Home</button></a>
+        </div>
     </div>
-    
-    <script type="module" src="{{ url_for('static', filename='js/gradient.js') }}"></script>
+    <footer>© 2025 TransferMusic | <a href="/privacy_policy">Privacy Policy</a> | <a href="/terms_of_service">Terms of Service</a></footer>
+
+    <script>
+        function transferToSpotify(playlistId) {
+            var statusDiv = document.getElementById("status-" + playlistId);
+            statusDiv.innerHTML = "Transferring... Please wait.";
+            $.ajax({
+                url: "/transfer_youtube_to_spotify",
+                type: "GET",
+                data: { playlist_id: playlistId },
+                success: function(response) {
+                    console.log("Success from /transfer_youtube_to_spotify:", response);
+                    if (response.message === "Playlist transferred successfully") {
+                        statusDiv.innerHTML = `Success! Spotify Playlist ID: <strong>${response.playlist_id}</strong>`;
+                    }
+                },
+                error: function(xhr) {
+                    console.log("Error from /transfer_youtube_to_spotify:", xhr.responseJSON);
+                    if (xhr.responseJSON && xhr.responseJSON.redirect) {
+                        window.location.href = xhr.responseJSON.redirect;
+                    } else {
+                        statusDiv.innerHTML = "Error: " + (xhr.responseJSON?.error || "Transfer failed.");
+                    }
+                }
+            });
+        }
+
+        // Retry the transfer after returning from authentication.
+        $(document).ready(function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const playlistId = urlParams.get('playlist_id');
+            if (playlistId) {
+                transferToSpotify(playlistId);
+                // Clean the URL to prevent repeated transfer requests on refresh.
+                window.history.replaceState({}, document.title, '/yt_playlists');
+            }
+        });
+    </script>
 </body>
 </html>

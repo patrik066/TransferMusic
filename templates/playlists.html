@@ -3,43 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Playlists</title>
+    <title>Spotify Playlists</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-    <h1>Choose a Playlist</h1>
-    <select id="playlists">
-        {% for playlist in playlists %}
-            <option value="{{ playlist.id }}">{{ playlist.name }}</option>
-        {% endfor %}
-    </select>
-    <button onclick="getSongs()">Songs</button>
-    <div id="playlistInfo"></div>
-
-    <footer>&copy; 2024 TransferMusic</footer>
+    <div class="content">
+        <h1>Your Spotify Playlists</h1>
+        <ul class="playlist-grid">
+            {% for playlist in playlists %}
+                <li>
+                    <h2>{{ playlist.name }}</h2>
+                    {% if playlist.images %}
+                        <img src="{{ playlist.images[0].url }}" alt="Thumbnail">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='default_playlist.png') }}" alt="Default Thumbnail">
+                    {% endif %}
+                    <button onclick="transferToYouTube('{{ playlist.id }}')">Transfer to YouTube</button>
+                    <div class="transfer-status" id="status-{{ playlist.id }}"></div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="button-group">
+            <a href="/"><button>Home</button></a>
+        </div>
+    </div>
+    <footer>© 2025 TransferMusic | <a href="/privacy_policy">Privacy Policy</a> | <a href="/terms_of_service">Terms of Service</a></footer>
 
     <script>
-        function getSongs(){
-            var playlist = document.getElementById("playlists").value;
-            if (!playlist) {
-                document.getElementById("playlistInfo").innerHTML = "Please select a playlist.";
-                return;
-            }
-
+        function transferToYouTube(playlistId) {
+            var statusDiv = document.getElementById("status-" + playlistId);
+            statusDiv.innerHTML = "Transferring... Please wait.";
             $.ajax({
-                url: "/select_playlist",
-                data: {
-                    playlist: playlist
+                url: "/transfer_playlist",
+                type: "GET",
+                data: { playlist_id: playlistId },
+                success: function(response) {
+                    console.log("Success from /transfer_playlist:", response);
+                    if (response.message === "Playlist transferred successfully") {
+                        statusDiv.innerHTML = "Success! Check your YouTube playlists.";
+                    }
                 },
-                success: function() {
-                    window.location.href = "/songs";
-                },
-                error: function(xhr, status, error) {
-                    document.getElementById("playlistInfo").innerHTML = "An error occurred: " + error;
+                error: function(xhr) {
+                    console.log("Error from /transfer_playlist:", xhr.responseJSON);
+                    if (xhr.responseJSON && xhr.responseJSON.redirect) {
+                        window.location.href = xhr.responseJSON.redirect;
+                    } else {
+                        statusDiv.innerHTML = "Error: " + (xhr.responseJSON?.error || "Transfer failed.");
+                    }
                 }
             });
         }
+
+        // Retry the transfer after returning from authentication.
+        $(document).ready(function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const playlistId = urlParams.get('playlist_id');
+            if (playlistId) {
+                transferToYouTube(playlistId);
+                // Clean the URL to prevent repeated transfer requests.
+                window.history.replaceState({}, document.title, '/playlists');
+            }
+        });
     </script>
 </body>
 </html>

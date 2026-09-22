@@ -1,88 +1,151 @@
-/* General styles */
-body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(to right, #17E7FF, #6D3BFF);
+/* Reset default styles */
+* {
     margin: 0;
     padding: 0;
-    color: #333;
+    box-sizing: border-box;
+}
+
+/* General body styling */
+body {
+    font-family: 'Poppins', sans-serif; /* Modern font */
+    background: linear-gradient(135deg, #1a1a2e, #16213e); /* Dark gradient background */
+    color: #e0e0e0; /* Light text */
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    padding: 20px;
 }
 
+/* Headings */
 h1 {
-    font-size: 2.5em;
-    color: #333;
+    font-size: 2.5rem;
     margin-bottom: 20px;
+    text-align: center;
+    color: #00d4ff; /* Cyan accent */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Links and buttons */
-a, button {
-    font-size: 1.1em;
-    padding: 10px 20px;
-    margin: 10px;
-    background-color: #1db954;
-    color: white;
+h2 {
+    font-size: 1.8rem;
+    color: #ffffff;
+    margin: 10px 0;
+}
+
+/* Links */
+a {
     text-decoration: none;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    color: #00d4ff;
+    transition: color 0.3s ease;
 }
 
-a:hover, button:hover {
-    background-color: #1ed760;
+a:hover {
+    color: #ff007a; /* Pink hover */
 }
 
-button:disabled {
-    background-color: #b0b0b0;
-    cursor: not-allowed;
+/* Container for content */
+.content {
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05); /* Slight transparency */
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-select {
-    font-size: 1em;
-    padding: 8px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-/* Pagination */
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.pagination button {
-    margin: 0 5px;
-}
-
-/* Song list */
-ul {
-    list-style-type: none;
+/* Playlist grid (for both Spotify and YouTube pages) */
+.playlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    list-style: none;
     padding: 0;
 }
 
-li {
-    font-size: 1.2em;
-    margin: 10px 0;
-    padding: 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    max-width: 500px;
-    width: 100%;
+.playlist-grid li {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
     text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.playlist-grid li:hover {
+    transform: scale(1.05); /* Slight zoom on hover */
+}
+
+.playlist-grid img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+/* Buttons */
+button, a button {
+    background-color: #00d4ff; /* Cyan */
+    color: #1a1a2e; /* Dark text */
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:hover, a button:hover {
+    background-color: #ff007a; /* Pink on hover */
+    color: #ffffff;
+    transform: translateY(-2px); /* Slight lift */
+}
+
+button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Button group (for navigation) */
+.button-group {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.button-group button {
+    min-width: 150px;
+}
+
+/* Transfer status */
+.transfer-status {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #00ff9d; /* Green for success */
 }
 
 /* Footer */
 footer {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #b0b0b0;
     text-align: center;
-    padding: 10px;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    font-size: 0.9em;
-    color: #777;
+}
+
+/* Policy sections (for Privacy Policy and Terms of Service) */
+.policy-section {
+    margin-bottom: 20px;
+}
+
+.policy-section h2 {
+    font-size: 1.5rem;
+    color: #00d4ff; /* Cyan to match h1 */
+    margin-bottom: 10px;
+}
+
+.policy-section p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #e0e0e0;
 }

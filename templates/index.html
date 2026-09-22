@@ -5,12 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TransferMusic</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo/logo.png') }}">
 </head>
 <body>
-    <h1>Welcome to TransferMusic</h1>
-    <p>Izberi ponudnika za prenos playlista.</p>
-    <a href="/login">Spotify</a>
-    <a href="/yt_login">YouTube</a>
-    <footer>&copy; 2024 TransferMusic</footer>
+    <div class="content">
+        <h1>Welcome to TransferMusic</h1>
+        <p>Choose a provider to transfer your playlist:</p>
+        <div class="button-group">
+            <a href="/login"><button>Spotify</button></a>
+            <a href="/yt_login"><button>YouTube</button></a>
+        </div>
+    </div>
+    <footer>© 2025 TransferMusic | <a href="/privacy_policy">Privacy Policy</a> | <a href="/terms_of_service">Terms of Service</a></footer>
 </body>
 </html>
