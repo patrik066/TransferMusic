@@ -42,6 +42,20 @@ The final version of TransferMusic includes:
 
 ---
 
+## Screenshots
+
+### Home page
+
+![TransferMusic home page](docs/screenshots/home.png)
+
+### Playlist transfer
+
+![Playlist transfer in progress](docs/screenshots/transfer-in-progress.png)
+
+### Successful transfer
+
+![Successful playlist transfer](docs/screenshots/transfer-success.png)
+
 ## How it works
 
 ### Spotify → YouTube
