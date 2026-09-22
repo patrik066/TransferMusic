@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Songs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Songs List</h1>
+
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('get_songs', page=page-1) }}" aria-label="Previous page"><button>Previous</button></a>
+        {% else %}
+            <button disabled>Previous</button>
+        {% endif %}
+
+        {% if page * page_size < total_songs %}
+            <a href="{{ url_for('get_songs', page=page+1) }}" aria-label="Next page"><button>Next</button></a>
+        {% else %}
+            <button disabled>Next</button>
+        {% endif %}
+    </div>
+
+    <ul>
+        {% for song in songs %}
+            <li>{{ song }}</li>
+        {% endfor %}
+    </ul>
+
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('get_songs', page=page-1) }}" aria-label="Previous page"><button>Previous</button></a>
+        {% else %}
+            <button disabled>Previous</button>
+        {% endif %}
+
+        {% if page * page_size < total_songs %}
+            <a href="{{ url_for('get_songs', page=page+1) }}" aria-label="Next page"><button>Next</button></a>
+        {% else %}
+            <button disabled>Next</button>
+        {% endif %}
+    </div>
+
+    <p>Number of all songs: {{total_songs}}</p>
+    <a href="/playlists"><button>Different playlist</button></a>
+    <a href="/"><button>Home</button></a>
+
+    <footer>&copy; 2024 TransferMusic</footer>
+</body>
+</html>

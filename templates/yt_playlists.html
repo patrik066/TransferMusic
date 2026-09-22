@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Playlists</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+</head>
+<body>
+    <div id="gradient">
+        <h1>Your YouTube Playlists</h1>
+        <ul>
+            {% for playlist in playlists %}
+                <li>
+                    <h2>{{ playlist.title }}</h2>
+                    <img src="{{ playlist.thumbnail }}" alt="Playlist Thumbnail">
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="/yt">Back</a><br>
+        <a href="/">Home</a>
+        <footer>&copy; 2024 TransferMusic</footer>
+    </div>
+    
+    <script type="module" src="{{ url_for('static', filename='js/gradient.js') }}"></script>
+</body>
+</html>

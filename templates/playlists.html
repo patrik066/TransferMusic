@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlists</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Choose a Playlist</h1>
+    <select id="playlists">
+        {% for playlist in playlists %}
+            <option value="{{ playlist.id }}">{{ playlist.name }}</option>
+        {% endfor %}
+    </select>
+    <button onclick="getSongs()">Songs</button>
+    <div id="playlistInfo"></div>
+
+    <footer>&copy; 2024 TransferMusic</footer>
+
+    <script>
+        function getSongs(){
+            var playlist = document.getElementById("playlists").value;
+            if (!playlist) {
+                document.getElementById("playlistInfo").innerHTML = "Please select a playlist.";
+                return;
+            }
+
+            $.ajax({
+                url: "/select_playlist",
+                data: {
+                    playlist: playlist
+                },
+                success: function() {
+                    window.location.href = "/songs";
+                },
+                error: function(xhr, status, error) {
+                    document.getElementById("playlistInfo").innerHTML = "An error occurred: " + error;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
