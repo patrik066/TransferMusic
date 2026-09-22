@@ -148,6 +148,14 @@ Then open:
 http://localhost:5000
 ```
 
+## Live demo
+
+The project was originally deployed on PythonAnywhere:
+
+https://transfermusic.pythonanywhere.com
+
+> Note: Due to later changes in Spotify Web API access requirements, some functionality may no longer work as it did when the project was originally developed.
+
 ## Current Spotify compatibility
 
 TransferMusic was developed before Spotify's 2026 Development Mode changes.
