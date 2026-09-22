@@ -1,6 +1,6 @@
 # TransferMusic
 
-TransferMusic is a Flask web application created as my final secondary-school project and submitted as part of my matura. The project received a grade of **5**.
+TransferMusic is a Flask web application developed as my final secondary-school project. The project received the highest grade (5).
 
 The project was built to explore working with music-platform APIs, OAuth authentication, playlists, and a small Flask-based web interface. It integrates with the **Spotify Web API** and **YouTube Data API v3**.
 
@@ -201,7 +201,7 @@ This project was developed as my final secondary-school project. It gave me prac
 - deployment to PythonAnywhere
 - handling credentials through environment variables
 
-The finished project received a grade of **5** as part of my matura work.
+The completed project received the highest grade (5) as my final secondary-school project.
 
 ## Author
 

@@ -1,4 +1,4 @@
-# For working without HTTPS (YT)
+# Allow OAuth over HTTP during local development.
 
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -34,13 +34,13 @@ YOUTUBE_REDIRECT_URI = f"{BASE_URL}/yt_callback"
 os.environ["REDIRECT_URI"] = SPOTIFY_REDIRECT_URI
 os.environ["YT_REDIRECT_URI"] = YOUTUBE_REDIRECT_URI
 
-# Spremenljivke
+# Load credentials and configuration from .env.
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Data Base
+# Local cache for Spotify playlist data
 
 app = Flask(__name__)
 db_spotify = TinyDB('db_spotify.json')
@@ -70,7 +70,7 @@ API_VERSION = 'v3'
 print(REDIRECT_URI)
 print(YT_REDIRECT_URI)
 
-################### Spotify (podprogrami) ################################
+# Spotify helpers
 
 def get_user_id():
     if 'user_id' not in session:
@@ -114,7 +114,7 @@ def refresh_token():
 
     return True
 
-################### YouTube (podprogrami) ################################
+# YouTube helpers
 
 def credentials_to_dict(credentials):
     return {
@@ -126,7 +126,7 @@ def credentials_to_dict(credentials):
         'scopes': credentials.scopes
     }
 
-################### Spotify ################################
+# Spotify routes
 
 @app.route('/')
 def index():
@@ -140,7 +140,7 @@ def login():
         'response_type': 'code',
         'scope': scope,
         'redirect_uri': REDIRECT_URI,
-        'show_dialog': True  # vedno se rabš logirat v Spotify (True) -- Lih obratn (False)
+        'show_dialog': True  # Always show the Spotify authorization dialog.
     }
     auth_url = f"{AUTH_URL}?{urllib.parse.urlencode(params)}"
     return redirect(auth_url)
@@ -183,10 +183,10 @@ def get_playlists():
     existing_data = db_spotify.search(User.user_id == user_id)
 
     if existing_data:
-        # Update new data
+        # Refresh cached playlist data for returning users.
         db_spotify.update({'playlists_data': data}, User.user_id == user_id)
     else:
-        # Insert new data
+        # Store playlist data for first-time users.
         db_spotify.insert({'user_id': user_id, 'playlists_data': data})
 
     playlists = [{'name': playlist['name'], 'id': playlist['id']} for playlist in data['items']]
@@ -207,12 +207,12 @@ def get_songs():
         'Authorization': f"Bearer {session['access_token']}"
     }
 
-    # Gets playlist ID from TinyDB
+    # Read the selected playlist from the current session.
     playlist_ID = session.get('playlist_ID')
     if not playlist_ID:
         return jsonify({'error': 'No playlist selected'}), 404
 
-    # Page
+    # Paginate Spotify tracks in batches of 50.
     page = int(request.args.get('page', 1))
     page_size = 50
     offset = (page - 1) * page_size
@@ -225,7 +225,7 @@ def get_songs():
     
     return render_template('songs.html', songs=songs, page=page, total_songs=total_songs, page_size=page_size)
 
-################### YouTube ################################
+# YouTube routes
 
 @app.route('/yt_login')
 def yt_login():
@@ -270,33 +270,32 @@ def yt():
 
 @app.route('/yt_playlists')
 def yt_playlists():
-    # Get YouTube credentials from the session
+    # Restore YouTube credentials from the session.
     credentials = session.get('yt_credentials')
 
-    # Redirect to YouTube login if credentials are not found
+    # Start OAuth if the user has not authenticated yet.
     if not credentials:
         return redirect('/yt_login')
     
-    # Build YouTube API service
+    # Build an authenticated YouTube Data API client.
     youtube = build(API_SERVICE_NAME, API_VERSION, credentials=google.oauth2.credentials.Credentials(**credentials))
     
-    # Fetch the user's playlists
+    # Fetch playlists owned by the authenticated user.
     try:
         playlists_response = youtube.playlists().list(
-            part='snippet',  # You can include more parts like 'contentDetails' if needed
-            mine=True,  # This specifies that we want the authenticated user's playlists
-            maxResults=25  # Adjust this number if you want more playlists
+            part='snippet',
+            mine=True,
+            maxResults=25
         ).execute()
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-    # Extract playlist information
     playlists_data = playlists_response.get('items', [])
     
     if not playlists_data:
         return jsonify({'error': 'No playlists found'}), 404
     
-    # Prepare playlist information to display
+    # Keep only the playlist data needed by the template.
     playlists = [{
         'title': playlist['snippet']['title'],
         'id': playlist['id'],
